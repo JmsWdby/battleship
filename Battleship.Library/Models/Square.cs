@@ -1,4 +1,5 @@
-﻿using Battleship.Library.Enums;
+﻿using System;
+using Battleship.Library.Enums;
 
 namespace Battleship.Library.Models
 {
@@ -8,11 +9,14 @@ namespace Battleship.Library.Models
         {
             Y = y;
             X = x.ToString();
+
+            LastUpdated = DateTime.UtcNow;
         }
         
         public string Y { get; }
         public string X { get; }
         public string Coordinates => Y + X;
         public SquareStatus? Status { get; set; }
+        public DateTime LastUpdated { get; private set; }
     }
 }
