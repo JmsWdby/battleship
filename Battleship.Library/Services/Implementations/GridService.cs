@@ -58,7 +58,7 @@ namespace Battleship.Library.Services.Implementations
 
             foreach (Square square in squares)
             {
-                square.Status = status;
+                square.UpdateStatus(status);
             }
         }
 
@@ -86,7 +86,7 @@ namespace Battleship.Library.Services.Implementations
 
             foreach (Square square in squares)
             {
-                square.Status = status;
+                square.UpdateStatus(status);
             }
         }
 
@@ -118,12 +118,12 @@ namespace Battleship.Library.Services.Implementations
 
             if (square.Status.HasValue && SquareStatus.Ship.HasFlag(square.Status.Value))
             {
-                var shipType = (ShipType) Enum.Parse(typeof(ShipType), square.Status.Value.ToString());
-                square.Status = SquareStatus.Hit;
+                var shipType = (ShipType)Enum.Parse(typeof(ShipType), square.Status.Value.ToString());
+                square.UpdateStatus(SquareStatus.Hit);
                 return shipType;
             }
 
-            square.Status = SquareStatus.Miss;
+            square.UpdateStatus(SquareStatus.Miss);
             return null;
         }
 
