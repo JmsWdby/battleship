@@ -118,7 +118,16 @@ namespace Battleship.Library.Services.Implementations
 
             if (square.Status.HasValue && SquareStatus.Ship.HasFlag(square.Status.Value))
             {
-                var shipType = (ShipType)Enum.Parse(typeof(ShipType), square.Status.Value.ToString());
+                ShipType shipType;
+                if (square.Status.Value == SquareStatus.Ship)
+                {
+                    shipType = ShipType.Custom;
+                }
+                else
+                {
+                    shipType = (ShipType)Enum.Parse(typeof(ShipType), square.Status.Value.ToString());
+                }
+
                 square.UpdateStatus(SquareStatus.Hit);
                 return shipType;
             }
