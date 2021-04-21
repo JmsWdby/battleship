@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading;
 using Battleship.Library.Enums;
 using Battleship.Library.Exceptions;
@@ -256,7 +257,7 @@ namespace Battleship.App
         private static bool RequestBool(string request)
         {
             string input = RequestString(request);
-            return bool.Parse(input);
+            return Regex.IsMatch(input, "y(es)*|t(rue)*|1", RegexOptions.IgnoreCase);
         }
 
         private static T RequestEnum<T>(string request) where T : struct
