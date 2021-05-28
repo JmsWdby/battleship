@@ -251,19 +251,41 @@ namespace Battleship.App
         private static int RequestInt(string request)
         {
             string input = RequestString(request);
-            return int.Parse(input);
+
+            if (int.TryParse(input, out int result))
+            {
+                return result;
+            }
+
+            result = default;
+            RewriteLine(result);
+
+            return result;
         }
 
         private static bool RequestBool(string request)
         {
             string input = RequestString(request);
-            return Regex.IsMatch(input, "y(es)*|t(rue)*|1", RegexOptions.IgnoreCase);
+            bool result = Regex.IsMatch(input, "y(es)*|t(rue)*|1", RegexOptions.IgnoreCase);
+            
+            RewriteLine(result);
+
+            return result;
         }
 
         private static T RequestEnum<T>(string request) where T : struct
         {
             string input = RequestString(request);
-            return Enum.Parse<T>(input, true);
+
+            if (Enum.TryParse(input, true, out T result))
+            {
+                return result;
+            }
+
+            result = default;
+            RewriteLine(result);
+
+            return result;
         }
 
         private static void DrawGrid(Grid grid, string format)
@@ -309,6 +331,15 @@ namespace Battleship.App
 
             Console.WriteLine();
             DrawGrid(grid, "Targeting");
+        }
+
+        private static void RewriteLine(object value)
+        {
+            int previousLineCursor = Console.CursorTop - 1;
+            Console.SetCursorPosition(0, previousLineCursor);
+            Console.Write(new string(' ', Console.BufferWidth)); 
+            Console.SetCursorPosition(0, previousLineCursor);
+            Console.WriteLine(value);
         }
     }
 }
