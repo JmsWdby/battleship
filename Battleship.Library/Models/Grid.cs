@@ -48,18 +48,6 @@ namespace Battleship.Library.Models
             bool positioning = format.Equals("Positioning");
             bool targeting = format.Equals("Targeting");
 
-            var gridValues = new Dictionary<SquareStatus, string>
-            {
-                {SquareStatus.AircraftCarrier, positioning ? "a" : " "},
-                {SquareStatus.Battleship, positioning ? "b" : " "},
-                {SquareStatus.Cruiser, positioning ? "c" : " "},
-                {SquareStatus.Submarine, positioning ? "s" : " "},
-                {SquareStatus.Destroyer, positioning ? "d" : " "},
-                {SquareStatus.Hit, targeting ? "h" : " "},
-                {SquareStatus.Miss, targeting ? "m" : " "},
-                {SquareStatus.Ship, positioning ? "s" : " "}
-            };
-
             int yLength = Squares.Select(square => square.Y).Last().Length;
             string yPadding = new(' ', yLength);
 
@@ -88,7 +76,64 @@ namespace Battleship.Library.Models
                 {
                     string xPadding = new(' ', square.X.Length - 1);
                     var squareStatus = square.Status;
-                    row += $"{(squareStatus.HasValue ? gridValues[squareStatus.Value] : " ")}{xPadding}{VerticalLine}";
+
+                    if (squareStatus is null)
+                    {
+                        row += " ";
+                    }
+                    else if (positioning)
+                    {
+                        if (squareStatus.Value.HasFlag(SquareStatus.AircraftCarrier))
+                        {
+                            row += "a";
+                        }
+                        else if (squareStatus.Value.HasFlag(SquareStatus.Battleship))
+                        {
+                            row += "b";
+                        }
+                        else if (squareStatus.Value.HasFlag(SquareStatus.Cruiser))
+                        {
+                            row += "c";
+                        }
+                        else if (squareStatus.Value.HasFlag(SquareStatus.Submarine) ||
+                                 squareStatus.Value.HasFlag(SquareStatus.Ship))
+                        {
+                            row += "s";
+                        }
+                        else if (squareStatus.Value.HasFlag(SquareStatus.Destroyer))
+                        {
+                            row += "d";
+                        }
+                        else
+                        {
+                            row += " ";
+                        }
+                    }
+                    else if (targeting)
+                    {
+                        if (squareStatus.Value.HasFlag(SquareStatus.Hit))
+                        {
+                            if (squareStatus.Value.HasFlag(SquareStatus.AircraftCarrier) ||
+                                squareStatus.Value.HasFlag(SquareStatus.Battleship) ||
+                                squareStatus.Value.HasFlag(SquareStatus.Cruiser) ||
+                                squareStatus.Value.HasFlag(SquareStatus.Submarine) ||
+                                squareStatus.Value.HasFlag(SquareStatus.Destroyer) ||
+                                squareStatus.Value.HasFlag(SquareStatus.Ship))
+                            {
+                                row += "h";
+                            }
+                            else
+                            {
+                                row += "m";
+                            }
+                        }
+                        else
+                        {
+                            row += " ";
+                        }
+                    }
+
+                    row += $"{xPadding}{VerticalLine}";
                 }
                 
                 rows.Add(row);

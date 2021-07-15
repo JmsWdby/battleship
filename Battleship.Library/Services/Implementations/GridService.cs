@@ -116,9 +116,10 @@ namespace Battleship.Library.Services.Implementations
                 throw new ShipTargetingException($"Unable to find square at position {target}");
             }
 
+            ShipType? shipType = null;
             if (square.Status.HasValue && SquareStatus.Ship.HasFlag(square.Status.Value))
             {
-                ShipType shipType;
+                
                 if (square.Status.Value == SquareStatus.Ship)
                 {
                     shipType = ShipType.Custom;
@@ -127,13 +128,10 @@ namespace Battleship.Library.Services.Implementations
                 {
                     shipType = (ShipType)Enum.Parse(typeof(ShipType), square.Status.Value.ToString());
                 }
-
-                square.UpdateStatus(SquareStatus.Hit);
-                return shipType;
             }
 
-            square.UpdateStatus(SquareStatus.Miss);
-            return null;
+            square.UpdateStatus(SquareStatus.Hit);
+            return shipType;
         }
 
         public bool HasShipBeenSunk(Grid grid, ShipType shipType)

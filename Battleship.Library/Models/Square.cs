@@ -26,7 +26,15 @@ namespace Battleship.Library.Models
                 return;
             }
 
-            Status = status;
+            if (Status == null)
+            {
+                Status = status;
+            }
+            else
+            {
+                Status |= status;
+            }
+            
             LastUpdated = DateTime.UtcNow;
         }
     }

@@ -11,7 +11,6 @@ namespace Battleship.Library.Enums
         Submarine = 8,
         Destroyer = 16,
         Hit = 32,
-        Miss = 64,
 
         Ship = AircraftCarrier | Battleship | Cruiser | Submarine | Destroyer
     }
