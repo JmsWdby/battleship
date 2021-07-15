@@ -10,6 +10,8 @@ namespace Battleship.Library.Services.Implementations
 {
     public class GridService : IGridService
     {
+        private const string Letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+
         public Grid Create()
         {
             const int size = 10;
@@ -97,6 +99,23 @@ namespace Battleship.Library.Services.Implementations
             return emptyPositions.Concat(shipPositions);
         }
 
+        public IEnumerable<string> GetValidNeighbouringTargets(Grid grid, string position)
+        {
+            var middle = grid.Squares.Single(square => square.Coordinates == position);
+
+            var squares = new List<Square>();
+
+            var xInt = int.Parse(middle.X);
+            var yInt = LetterSequenceToInteger(middle.Y);
+
+            squares.Add(grid.Squares.SingleOrDefault(square => square.X == middle.X && square.Y == IntegerToLetterSequence(yInt + 1)));
+            squares.Add(grid.Squares.SingleOrDefault(square => square.X == middle.X && square.Y == IntegerToLetterSequence(yInt - 1)));
+            squares.Add(grid.Squares.SingleOrDefault(square => square.X == (xInt - 1).ToString() && square.Y == middle.Y));
+            squares.Add(grid.Squares.SingleOrDefault(square => square.X == (xInt + 1).ToString() && square.Y == middle.Y));
+
+            return squares.Where(square => square is not null && (square.Status is null || SquareStatus.Ship.HasFlag(square.Status.Value))).Select(square => square.Coordinates);
+        }
+
         public IEnumerable<string> GetShipPositions(Grid grid)
         {
             return GetPositions(grid, SquareStatus.Ship);
@@ -166,6 +185,34 @@ namespace Battleship.Library.Services.Implementations
         private static IEnumerable<string> GetEmptyPositions(Grid grid)
         {
             return grid.Squares.Where(square => square.Status is null).Select(square => square.Coordinates);
+        }
+
+        private static int LetterSequenceToInteger(string value)
+        {
+            var result = 0;
+
+            foreach (var letter in value)
+            {
+                result *= Letters.Length;
+                result += letter - 'A' + 1;
+            }
+
+            return result - 1;
+        }
+
+        private static string IntegerToLetterSequence(int value)
+        {
+            string result = "";
+
+            if (value < 0)
+                return result;
+
+            if (value >= Letters.Length)
+                result += Letters[value / Letters.Length - 1];
+
+            result += Letters[value % Letters.Length];
+
+            return result;
         }
     }
 }
